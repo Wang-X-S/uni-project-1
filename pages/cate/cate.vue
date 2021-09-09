@@ -1,6 +1,6 @@
 <template>
   <view>
-    
+    Cate
   </view>
 </template>
 
@@ -17,6 +17,6 @@
   }
 </script>
 
-<style>
+<style lang="scss">
 
 </style>

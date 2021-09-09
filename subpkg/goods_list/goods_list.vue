@@ -1,6 +1,6 @@
 <template>
   <view>
-    my
+    你好我是list
   </view>
 </template>
 

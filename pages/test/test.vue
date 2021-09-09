@@ -1,6 +1,6 @@
 <template>
   <view>
-    my
+    123
   </view>
 </template>
 
