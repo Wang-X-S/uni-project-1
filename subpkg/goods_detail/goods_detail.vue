@@ -1,6 +1,6 @@
 <template>
   <view>
-    
+    你好，我是detail
   </view>
 </template>
 
@@ -8,7 +8,7 @@
   export default {
     data() {
       return {
-        
+       
       };
     }
   }
