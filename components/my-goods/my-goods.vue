@@ -1,7 +1,8 @@
 <template>
   <view class="good-item">
     <view class="good-item-left">
-      <image :src="good.goods_big_logo||defaultPic" class="good-pic"></image>
+      <radio :checked="good.goods_state" color="#C00000" v-if="showRadio" @click="radioChangeEvent"></radio>
+      <image :src="good.goods_small_logo||defaultPic" class="good-pic"></image>
     </view>
     <view class="good-item-right">
       <view class="good-name">{{good.goods_name}}</view>
@@ -9,6 +10,7 @@
         <view class="good-price">
          ￥{{good.goods_price | tofixed}}
         </view>
+        <uni-number-box :min="1" :value="good.goods_count" v-if="showNum" @change="numChange"></uni-number-box>
       </view>
     </view>
   </view>
@@ -21,6 +23,14 @@
       good:{
         type:Object,
         default:''
+      },
+      showRadio:{
+        type:Boolean,
+        default:false
+      },
+      showNum:{
+        type:Boolean,
+        default:false
       }
     },
     data() {
@@ -33,7 +43,20 @@
        return Number(num).toFixed(2)
       }
     },
-
+    methods:{
+      numChange(e){
+          this.$emit('num-change',{
+            goods_id:this.good.goods_id,
+            goods_count:e
+          })
+      },
+      radioChangeEvent(){
+        this.$emit('radio-change',{
+          goods_id:this.good.goods_id,
+          goods_state:!this.good.goods_state
+        })
+      }
+    }
   }
 </script>
 
@@ -44,11 +67,15 @@
     padding: 5px;
 
     .good-item-left {
-      margin-right: 5px;
+  margin-right: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
       .good-pic {
         width: 100px;
         height: 100px;
+            display: block;
       }
     }
 
@@ -56,12 +83,15 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-
+      flex:1;
       .good-name {
         font-size: 14px;
       }
 
       .good-info-box {
+        display: flex;
+        justify-content: space-between;
+            align-items: center;
         .good-price {
           font-size: 16px;
           color: #c00000

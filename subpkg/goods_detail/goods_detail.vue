@@ -22,7 +22,7 @@
           </view>
         </view>
         <view class="yf">
-          快递:免运费
+          快递:免运费{{cart.length}}
         </view>
       </view>
       <!-- 富文本 -->
@@ -39,11 +39,34 @@
 </template>
 
 <script>
+  import {
+    mapState,
+    mapMutations,
+    mapGetters
+  } from 'vuex'
   export default {
-    data() {
+    computed: {
+      // 调用 mapState 方法，把 m_cart 模块中的 cart 数组映射到当前页面中，作为计算属性来使用
+      // ...mapState('模块的名称', ['要映射的数据名称1', '要映射的数据名称2'])
+      ...mapState('m_cart', ['cart']),
+      ...mapGetters('m_cart',['total'])
+    },
+    watch:{
+      total:{
+        handler(newVal){
+          const findResult = this.options.find(x=>x.text === '购物车')
+          if(findResult){
+            findResult.info = newVal
+          }
+        },
+        immediate:true
+
+      }
+    },
+ data() {
       return {
         goods_info: {},
-        options: [ {
+        options: [{
           icon: 'shop',
           text: '店铺',
 
@@ -52,7 +75,7 @@
         }, {
           icon: 'cart',
           text: '购物车',
-          info: 2
+          info: 0
         }],
         buttonGroup: [{
             text: '加入购物车',
@@ -89,24 +112,47 @@
           urls: this.goods_info.pics.map(x => x.pics_big)
         })
       },
-      onClick(e){
-        if(e.content.text ==="购物车"){
+      onClick(e) {
+        if (e.content.text === "购物车") {
           uni.switchTab({
-            url:'/pages/cart/cart'
+            url: '/pages/cart/cart'
           })
         }
         console.log(e)
-      }
+      },
+      // 右侧按钮的点击事件处理函数
+      buttonClick(e) {
+        // 1. 判断是否点击了 加入购物车 按钮
+        if (e.content.text === '加入购物车') {
+          
+          // 2. 组织一个商品的信息对象
+          const goods = {
+            goods_id: this.goods_info.goods_id, // 商品的Id
+            goods_name: this.goods_info.goods_name, // 商品的名称
+            goods_price: this.goods_info.goods_price, // 商品的价格
+            goods_count: 1, // 商品的数量
+            goods_small_logo: this.goods_info.goods_small_logo, // 商品的图片
+            goods_state: true // 商品的勾选状态
+          }
+          // 3. 通过 this 调用映射过来的 addToCart 方法，把商品信息对象存储到购物车中
+          this.addToCart(goods)
+          
+        }
+      },
+      ...mapMutations('m_cart', ['addToCart']),
+
     }
   }
 </script>
 
 <style lang="scss">
+
   .goods-nav {
     position: fixed;
     bottom: 0;
     width: 100%;
   }
+
   swiper {
     height: 750rpx;
 
@@ -118,6 +164,7 @@
 
   .goods_info {
     margin: 10px;
+
     .goods-price {
       color: #c00000;
       font-size: 18px;
@@ -144,13 +191,15 @@
         color: gray;
       }
     }
+
     .yf {
       margin: 10px 0;
       font-size: 12px;
       color: gray;
     }
   }
-  .goods-detail-container{
+
+  .goods-detail-container {
     padding-bottom: 50px;
   }
 </style>
