@@ -1,6 +1,6 @@
 <template>
   <view class="my-container">
-    <my-login v-if="token"></my-login>
+    <my-login v-if="token===''"></my-login>
     <my-userinfo v-else></my-userinfo>
   </view>
 </template>

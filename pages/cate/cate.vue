@@ -48,12 +48,10 @@ import badgeMix from '@/mixins/tabbar-badge.js'
         const {
           data: res
         } = await uni.$http.get('/api/public/v1/categories')
-        console.log(res)
         this.cateList = res.message
 
         //二级标题
         this.catelv2 = res.message[0].children
-        console.log(this.catelv2)
       },
       changeActive(i) {
         this.active = i
